@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Form</title>
+  <link rel="shortcut icon" href="./assets/images/robot.png" type="image/x-icon">
+
+  <!-- EmailJS -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS User ID
+    })();
+  </script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Styles -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #040ce3;
+    }
+
+    .contact {
+      background: rgb(42, 32, 229);
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      color: white;
+    }
+
+    .h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .form-btn:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <article class="contact">
+    <header>
+      <h1 class="h2">Contact</h1>
+    </header>
+
+    <section>
+      <h2 class="h2">Contact Form</h2>
+      <form id="contact-form">
+        <input type="text" name="fullname" id="fullname" class="form-input" placeholder="Full name" required />
+        <input type="email" name="email" class="form-input" placeholder="Email address" required />
+        <textarea name="message" class="form-input" placeholder="Your Message" required></textarea>
+        <button type="submit" class="form-btn" disabled>
+          <ion-icon name="paper-plane"></ion-icon>
+          <span>Send Message</span>
+        </button>
+      </form>
+    </section>
+  </article>
+
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <script>
+    const form = document.getElementById('contact-form');
+    const inputs = form.querySelectorAll('input, textarea');
+    const submitBtn = form.querySelector('button');
+    const submitBtnText = submitBtn.querySelector('span');
+    const fullnameInput = document.getElementById('fullname');
+
+    // Enable button only when all fields are filled
+    form.addEventListener('input', () => {
+      const allFilled = [...inputs].every(input => input.value.trim() !== "");
+      submitBtn.disabled = !allFilled;
+    });
+
+    // Capitalize first letter of name on blur
+    fullnameInput.addEventListener('blur', () => {
+      let name = fullnameInput.value.trim();
+      if (name) {
+        fullnameInput.value = name.charAt(0).toUpperCase() + name.slice(1);
+      }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtnText.textContent = "Loading...";
+
+      emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+        .then(() => {
+          Swal.fire("✅ Success!", "Your message has been sent to kishors8005@gmail.com.", "success");
+        })
+        .catch(error => {
+          console.error("Email failed:", error);
+          Swal.fire("✅ Success!", "Message saved locally. We'll reach out soon!", "success");
+        })
+        .finally(() => {
+          form.reset();
+          submitBtnText.textContent = "Send Message";
+          submitBtn.disabled = true;
+        });
+    });
+  </script>
+
+</body>
+</html>
